@@ -1,0 +1,6 @@
+@ThreadCity2._0BackEnd_HostAddress = http://localhost:5238
+
+GET {{ThreadCity2._0BackEnd_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
