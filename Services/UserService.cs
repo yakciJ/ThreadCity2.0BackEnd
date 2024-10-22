@@ -1,4 +1,5 @@
-﻿using ThreadCity2._0BackEnd.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using ThreadCity2._0BackEnd.Data;
 using ThreadCity2._0BackEnd.Models.DTO.User;
 using ThreadCity2._0BackEnd.Models.Mappers;
 using ThreadCity2._0BackEnd.Services.Interfaces;
@@ -26,6 +27,12 @@ namespace ThreadCity2._0BackEnd.Services
             {
                 throw new Exception(e.Message);
             }
+        }
+
+        public async Task<List<UserDto>> GetAllUser()
+        {
+            var allUsers = await _context.Users.ToListAsync();
+            return allUsers.Select(user => user.ToUserDtoFromUser()).ToList();
         }
 
         // get user by id

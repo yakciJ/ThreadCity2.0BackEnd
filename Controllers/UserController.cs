@@ -23,6 +23,14 @@ namespace ThreadCity2._0BackEnd.Controllers
             return Ok(createdUser);
         }
 
+        //get all user
+        [HttpGet]
+        public async Task<IActionResult> GetAllUser()
+        {
+            var users = await _userService.GetAllUser();
+            return Ok(users);
+        }
+
         // get user by id
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserById(int id)
