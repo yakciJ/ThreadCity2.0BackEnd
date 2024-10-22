@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ThreadCity2._0BackEnd.Models.DTO;
+using ThreadCity2._0BackEnd.Models.DTO.User;
 using ThreadCity2._0BackEnd.Services.Interfaces;
 
 namespace ThreadCity2._0BackEnd.Controllers
@@ -15,12 +15,20 @@ namespace ThreadCity2._0BackEnd.Controllers
         {
             _userService = userService;
         }
-
+        // create account
         [HttpPost]
         public async Task<IActionResult> CreateUser(CreateUserDto userDto)
         {
             var createdUser = await _userService.CreateUser(userDto);
             return Ok(createdUser);
+        }
+
+        // get user by id
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUserById(int id)
+        {
+            var user = await _userService.GetUserById(id);
+            return Ok(user);
         }
     }
 }

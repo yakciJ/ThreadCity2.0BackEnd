@@ -1,5 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
-using ThreadCity2._0BackEnd.Models.DTO;
+using ThreadCity2._0BackEnd.Models.DTO.User;
 using ThreadCity2._0BackEnd.Models.Entities;
 
 namespace ThreadCity2._0BackEnd.Models.Mappers
@@ -13,6 +13,23 @@ namespace ThreadCity2._0BackEnd.Models.Mappers
                 UserName = user.UserName,
                 Password = user.Password,
                 Email = user.Email
+            };
+        }
+
+        public static UserDto ToUserDtoFromUser(this User user)
+        {
+            return new UserDto
+            {
+                UserId = user.UserId,
+                UserName = user.UserName,
+                FullName = user.FullName,
+                Email = user.Email,
+                Phone = user.Phone,
+                AvatarImgId = user.AvatarImgId,
+                AvatarImage = user.AvatarImage,
+                CoverImgId = user.CoverImgId,
+                CoverImage = user.CoverImage,
+                CreatedAt = user.CreatedAt
             };
         }
     }
