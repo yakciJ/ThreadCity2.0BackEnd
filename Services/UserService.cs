@@ -29,6 +29,18 @@ namespace ThreadCity2._0BackEnd.Services
             }
         }
 
+        public async Task<string> DeleteUser(int id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return ("notFound");
+            }
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+            return ("deleted");
+        }
+
         public async Task<List<UserDto>> GetAllUser()
         {
             var allUsers = await _context.Users.ToListAsync();
@@ -44,6 +56,34 @@ namespace ThreadCity2._0BackEnd.Services
                 throw new Exception($"User with id {id} not found.");
             }
             return user.ToUserDtoFromUser();
+        }
+
+        public Task<UserDto> GetUserByName(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<UserDto> UpdateUser(int id, UserDto userDto)
+        {
+            if (id != userDto.UserId)
+            {
+                throw new Exception("Id mismatch");
+            }
+            else if (userDto == null)
+            {
+                throw new Exception("No input data");
+            }
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                throw new Exception("User not found");
+            }
+            else
+            {
+                _context.Users.Update(userDto.ToUserFromUserDto());
+                await _context.SaveChangesAsync();
+                return userDto;
+            }
         }
     }
 }

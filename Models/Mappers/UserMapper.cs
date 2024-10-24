@@ -23,13 +23,32 @@ namespace ThreadCity2._0BackEnd.Models.Mappers
                 UserId = user.UserId,
                 UserName = user.UserName,
                 FullName = user.FullName,
+                Password = user.Password,
                 Email = user.Email,
                 Phone = user.Phone,
                 AvatarImgId = user.AvatarImgId,
-                AvatarImage = user.AvatarImage,
+                //AvatarImage = user.AvatarImage,
                 CoverImgId = user.CoverImgId,
-                CoverImage = user.CoverImage,
+                //CoverImage = user.CoverImage,
                 CreatedAt = user.CreatedAt
+            };
+        }
+
+        public static User ToUserFromUserDto(this UserDto userDto)
+        {
+            return new User
+            {
+                UserId = userDto.UserId,
+                UserName = userDto.UserName,
+                FullName = userDto.FullName,
+                Password = userDto.Password,
+                Email = userDto.Email,
+                Phone = userDto.Phone,
+                AvatarImgId = userDto.AvatarImgId,
+                //AvatarImage = userDto.AvatarImage,
+                CoverImgId = userDto.CoverImgId,
+                //CoverImage = userDto.CoverImage,
+                CreatedAt = userDto.CreatedAt
             };
         }
     }
