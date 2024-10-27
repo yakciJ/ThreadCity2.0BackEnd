@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ThreadCity2._0BackEnd.Models.DTO.User;
 using ThreadCity2._0BackEnd.Services.Interfaces;
@@ -23,8 +24,31 @@ namespace ThreadCity2._0BackEnd.Controllers
             return Ok(createdUser);
         }
 
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            return await _userService.Register(registerDto);
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginDto loginDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            return await _userService.Login(loginDto);
+        }
+
+
+
         //get all user
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAllUser()
         {
             var users = await _userService.GetAllUser();
@@ -33,7 +57,7 @@ namespace ThreadCity2._0BackEnd.Controllers
 
         // get user by id
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetUserById(int id)
+        public async Task<IActionResult> GetUserById([FromRoute] string id)
         {
             try
             {
@@ -48,7 +72,7 @@ namespace ThreadCity2._0BackEnd.Controllers
 
         // deleted user by id
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        public async Task<IActionResult> DeleteUser([FromRoute] string id)
         {
             var response = await _userService.DeleteUser(id);
             if (response == "deleted")
@@ -66,7 +90,7 @@ namespace ThreadCity2._0BackEnd.Controllers
         }
         // update user by id
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, [FromBody] UserDto userDto)
+        public async Task<IActionResult> UpdateUser([FromRoute]string id, [FromBody] UserDto userDto)
         {
             try
             {

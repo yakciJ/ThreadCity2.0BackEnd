@@ -1,13 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using ThreadCity2._0BackEnd.Models.Entities;
 
 namespace ThreadCity2._0BackEnd.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<User>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
-        public DbSet<User> Users { get; set; }
+        //public DbSet<User> Users { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<LikePost> LikePosts { get; set; }
         public DbSet<PostImage> PostImages { get; set; }
@@ -95,6 +97,23 @@ namespace ThreadCity2._0BackEnd.Data
                 .WithMany(c => c.LikeComments)
                 .HasForeignKey(lc => lc.CommentId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            List<IdentityRole> roles = new List<IdentityRole>
+            {
+                new IdentityRole
+                {
+                    Name = "Admin",
+                    NormalizedName = "ADMIN"
+                },
+                new IdentityRole
+                {
+                    Name = "User",
+                    NormalizedName = "USER"
+                }
+            };
+
+            modelBuilder.Entity<IdentityRole>().HasData(roles);
+
         }
     }
 }

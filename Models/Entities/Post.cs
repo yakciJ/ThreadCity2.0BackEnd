@@ -7,7 +7,7 @@ namespace ThreadCity2._0BackEnd.Models.Entities
     {
         [Key] // primary key
         public int PostId { get; set; } // Primary Key
-        public int UserId { get; set; } // Foreign Key
+        public string? UserId { get; set; } // Foreign Key
         public User? User { get; set; } // Navigation property
         public required string Title { get; set; }
         public required string Content { get; set; }

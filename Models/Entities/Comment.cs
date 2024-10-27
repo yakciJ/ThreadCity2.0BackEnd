@@ -3,7 +3,7 @@
     public class Comment
     {
         public int CommentId { get; set; } // Primary Key
-        public int UserId { get; set; } // Foreign Key
+        public string? UserId { get; set; } // Foreign Key
         public User? User { get; set; } // Navigation property
 
         public int PostId { get; set; } // Foreign Key

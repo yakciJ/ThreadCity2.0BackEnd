@@ -1,6 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ThreadCity2._0BackEnd.Data;
 using ThreadCity2._0BackEnd.Models.DTO.User;
+using ThreadCity2._0BackEnd.Models.Entities;
 using ThreadCity2._0BackEnd.Models.Mappers;
 using ThreadCity2._0BackEnd.Services.Interfaces;
 
@@ -9,10 +12,16 @@ namespace ThreadCity2._0BackEnd.Services
     public class UserService : IUserService
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
+        private readonly ITokenService _tokenService;
 
-        public UserService(ApplicationDbContext context)
+        public UserService(ApplicationDbContext context, UserManager<User> userManager, SignInManager<User> signInManager, ITokenService tokenService)
         {
             _context = context;
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _tokenService = tokenService;
         }
 
         public async Task<CreateUserDto> CreateUser(CreateUserDto userDto)
@@ -29,7 +38,7 @@ namespace ThreadCity2._0BackEnd.Services
             }
         }
 
-        public async Task<string> DeleteUser(int id)
+        public async Task<string> DeleteUser(string id)
         {
             var user = await _context.Users.FindAsync(id);
             if (user == null)
@@ -48,7 +57,7 @@ namespace ThreadCity2._0BackEnd.Services
         }
 
         // get user by id
-        public async Task<UserDto> GetUserById(int id)
+        public async Task<UserDto> GetUserById(string id)
         {
             var user = await _context.Users.FindAsync(id);
             if (user == null)
@@ -63,7 +72,75 @@ namespace ThreadCity2._0BackEnd.Services
             throw new NotImplementedException();
         }
 
-        public async Task<UserDto> UpdateUser(int id, UserDto userDto)
+        public async Task<IActionResult> Login(LoginDto loginDto)
+        {
+            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == loginDto.Username);
+            if (user == null)
+            {
+                return new UnauthorizedObjectResult("Invalid Username!");
+            }
+
+            var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
+            if (!result.Succeeded)
+            {
+                return new UnauthorizedObjectResult("Username not found and/or password incorrect");
+            }
+
+            return new OkObjectResult(
+                new NewUserDto
+                {
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    Token = _tokenService.CreateToken(user)
+                });
+
+        }
+
+
+        public async Task<IActionResult> Register(RegisterDto registerDto)
+        {
+            try
+            {
+                var user = new User
+                {
+                    UserName = registerDto.Username,
+                    Email = registerDto.Email
+                };
+
+                var createUser = await _userManager.CreateAsync(user, registerDto.Password);
+
+                if (createUser.Succeeded)
+                {
+                    var roleResult = await _userManager.AddToRoleAsync(user, "User");
+
+                    if (roleResult.Succeeded)
+                    {
+                        return new OkObjectResult( 
+                            new NewUserDto
+                            {
+                                UserName = user.UserName,
+                                Email = user.Email,
+                                Token = _tokenService.CreateToken(user)
+                            });
+                    }
+                    else
+                    {
+                        return new ObjectResult(roleResult.Errors) { StatusCode = 500 };
+                    }
+                }
+                else
+                {
+                    return new ObjectResult(createUser.Errors) { StatusCode = 500 };
+                }
+            }
+            catch (Exception e)
+            {
+                return new ObjectResult(e) { StatusCode = 500 };
+            }
+        }
+
+
+        public async Task<UserDto> UpdateUser(string id, UserDto userDto)
         {
             if (id != userDto.UserId)
             {

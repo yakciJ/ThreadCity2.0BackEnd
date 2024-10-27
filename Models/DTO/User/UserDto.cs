@@ -5,7 +5,7 @@ namespace ThreadCity2._0BackEnd.Models.DTO.User
 {
     public class UserDto
     {
-        public int UserId { get; set; } // Primary Key
+        public string? UserId { get; set; } // Primary Key
         public required string UserName { get; set; }
         public required string Password { get; set; }
         public string? FullName { get; set; }

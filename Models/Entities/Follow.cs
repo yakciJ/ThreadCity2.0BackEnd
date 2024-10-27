@@ -8,10 +8,10 @@ namespace ThreadCity2._0BackEnd.Models.Entities
         [Key] // primary key
         public int FollowId { get; set; } // Primary Key
 
-        public int FollowerUserId { get; set; } // Foreign Key
+        public string? FollowerUserId { get; set; } // Foreign Key
         public User? FollowerUser { get; set; } // Navigation property
 
-        public int FollowedUserId { get; set; } // Foreign Key
+        public string? FollowedUserId { get; set; } // Foreign Key
         public User? FollowedUser { get; set; } // Navigation property
 
     }

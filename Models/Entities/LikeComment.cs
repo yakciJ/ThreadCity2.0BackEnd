@@ -6,7 +6,7 @@ namespace ThreadCity2._0BackEnd.Models.Entities
     {
         [Key]
         public int LikeCmtId { get; set; } // Primary Key
-        public int UserId { get; set; } // Foreign Key
+        public string? UserId { get; set; } // Foreign Key
         public User? User { get; set; } // Navigation property
 
         public int CommentId { get; set; } // Foreign Key

@@ -11,7 +11,7 @@ namespace ThreadCity2._0BackEnd.Models.Mappers
             return new User
             {
                 UserName = user.UserName,
-                Password = user.Password,
+                PasswordHash = user.Password,
                 Email = user.Email
             };
         }
@@ -20,12 +20,12 @@ namespace ThreadCity2._0BackEnd.Models.Mappers
         {
             return new UserDto
             {
-                UserId = user.UserId,
+                UserId = user.Id,
                 UserName = user.UserName,
                 FullName = user.FullName,
-                Password = user.Password,
+                Password = user.PasswordHash,
                 Email = user.Email,
-                Phone = user.Phone,
+                Phone = user.PhoneNumber,
                 AvatarImgId = user.AvatarImgId,
                 //AvatarImage = user.AvatarImage,
                 CoverImgId = user.CoverImgId,
@@ -38,12 +38,12 @@ namespace ThreadCity2._0BackEnd.Models.Mappers
         {
             return new User
             {
-                UserId = userDto.UserId,
+                Id = userDto.UserId,
                 UserName = userDto.UserName,
                 FullName = userDto.FullName,
-                Password = userDto.Password,
+                PasswordHash = userDto.Password,
                 Email = userDto.Email,
-                Phone = userDto.Phone,
+                PhoneNumber = userDto.Phone,
                 AvatarImgId = userDto.AvatarImgId,
                 //AvatarImage = userDto.AvatarImage,
                 CoverImgId = userDto.CoverImgId,
