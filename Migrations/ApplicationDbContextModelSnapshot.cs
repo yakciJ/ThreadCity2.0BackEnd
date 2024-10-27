@@ -196,7 +196,7 @@ namespace ThreadCity2._0BackEnd.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comments", (string)null);
                 });
 
             modelBuilder.Entity("ThreadCity2._0BackEnd.Models.Entities.Follow", b =>
@@ -219,7 +219,7 @@ namespace ThreadCity2._0BackEnd.Migrations
 
                     b.HasIndex("FollowerUserId");
 
-                    b.ToTable("Follows");
+                    b.ToTable("Follows", (string)null);
                 });
 
             modelBuilder.Entity("ThreadCity2._0BackEnd.Models.Entities.Image", b =>
@@ -235,7 +235,7 @@ namespace ThreadCity2._0BackEnd.Migrations
 
                     b.HasKey("ImageId");
 
-                    b.ToTable("Images");
+                    b.ToTable("Images", (string)null);
                 });
 
             modelBuilder.Entity("ThreadCity2._0BackEnd.Models.Entities.LikeComment", b =>
@@ -258,7 +258,7 @@ namespace ThreadCity2._0BackEnd.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("LikeComments");
+                    b.ToTable("LikeComments", (string)null);
                 });
 
             modelBuilder.Entity("ThreadCity2._0BackEnd.Models.Entities.LikePost", b =>
@@ -281,7 +281,7 @@ namespace ThreadCity2._0BackEnd.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("LikePosts");
+                    b.ToTable("LikePosts", (string)null);
                 });
 
             modelBuilder.Entity("ThreadCity2._0BackEnd.Models.Entities.LinkPostTag", b =>
@@ -304,7 +304,7 @@ namespace ThreadCity2._0BackEnd.Migrations
 
                     b.HasIndex("TagId");
 
-                    b.ToTable("LinkPostTags");
+                    b.ToTable("LinkPostTags", (string)null);
                 });
 
             modelBuilder.Entity("ThreadCity2._0BackEnd.Models.Entities.Post", b =>
@@ -333,7 +333,7 @@ namespace ThreadCity2._0BackEnd.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Posts");
+                    b.ToTable("Posts", (string)null);
                 });
 
             modelBuilder.Entity("ThreadCity2._0BackEnd.Models.Entities.PostImage", b =>
@@ -356,7 +356,7 @@ namespace ThreadCity2._0BackEnd.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.ToTable("PostImages");
+                    b.ToTable("PostImages", (string)null);
                 });
 
             modelBuilder.Entity("ThreadCity2._0BackEnd.Models.Entities.SeenPost", b =>
@@ -382,7 +382,7 @@ namespace ThreadCity2._0BackEnd.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("SeenPosts");
+                    b.ToTable("SeenPosts", (string)null);
                 });
 
             modelBuilder.Entity("ThreadCity2._0BackEnd.Models.Entities.Share", b =>
@@ -408,7 +408,7 @@ namespace ThreadCity2._0BackEnd.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Shares");
+                    b.ToTable("Shares", (string)null);
                 });
 
             modelBuilder.Entity("ThreadCity2._0BackEnd.Models.Entities.Tag", b =>
@@ -425,7 +425,7 @@ namespace ThreadCity2._0BackEnd.Migrations
 
                     b.HasKey("TagId");
 
-                    b.ToTable("Tags");
+                    b.ToTable("Tags", (string)null);
                 });
 
             modelBuilder.Entity("ThreadCity2._0BackEnd.Models.Entities.User", b =>
