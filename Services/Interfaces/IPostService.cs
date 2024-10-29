@@ -5,7 +5,7 @@ namespace ThreadCity2._0BackEnd.Services.Interfaces
 {
     public interface IPostService
     {
-        ICollection<PostDto>? GetAllPosts();
+        Task<ICollection<PostDto>?> GetAllPostsAsync();
 
         Task<PostDto> CreatePostAsync(string userId, CreatePostRequestDto requestDto);
     }

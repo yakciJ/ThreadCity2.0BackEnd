@@ -23,9 +23,9 @@ namespace ThreadCity2._0BackEnd.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAllPosts()
+        public async Task<IActionResult> GetAllPosts()
         {
-            var postDtos = _postService.GetAllPosts();
+            var postDtos = await _postService.GetAllPostsAsync();
             return Ok(postDtos);
         }
 

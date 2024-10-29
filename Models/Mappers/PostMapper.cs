@@ -12,7 +12,9 @@ namespace ThreadCity2._0BackEnd.Models.Mappers
                 UserId = post.UserId,
                 Title = post.Title,
                 Content = post.Content,
-                CreatedAt = post.CreatedAt
+                CreatedAt = post.CreatedAt,
+                AuthorUserName = post.User?.UserName,
+                AuthorFullName = post.User?.FullName,
             };
         }
 

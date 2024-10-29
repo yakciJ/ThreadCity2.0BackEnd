@@ -1,4 +1,5 @@
-﻿using ThreadCity2._0BackEnd.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using ThreadCity2._0BackEnd.Data;
 using ThreadCity2._0BackEnd.Models.DTO.Post;
 using ThreadCity2._0BackEnd.Models.Entities;
 using ThreadCity2._0BackEnd.Models.Mappers;
@@ -24,9 +25,9 @@ namespace ThreadCity2._0BackEnd.Services
             return post.ToPostDto();
         }
 
-        ICollection<PostDto>? IPostService.GetAllPosts()
+        async Task<ICollection<PostDto>?> IPostService.GetAllPostsAsync()
         {
-            var posts = _context.Posts.ToList();
+            var posts = await _context.Posts.Include(p => p.User).ToListAsync();
             var postDtos = posts.Select(p => p.ToPostDto()).ToList();
 
             return postDtos;
