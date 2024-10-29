@@ -1,5 +1,4 @@
-﻿
-namespace ThreadCity2._0BackEnd.Models.DTO
+﻿namespace ThreadCity2._0BackEnd.Models.DTO.Post
 {
     public class PostDto
     {
