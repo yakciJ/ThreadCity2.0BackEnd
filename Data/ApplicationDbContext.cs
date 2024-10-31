@@ -11,6 +11,7 @@ namespace ThreadCity2._0BackEnd.Data
 
         //public DbSet<User> Users { get; set; }
         public DbSet<Post> Posts { get; set; }
+        public DbSet<PostScore> PostScores { get; set; }
         public DbSet<LikePost> LikePosts { get; set; }
         public DbSet<PostImage> PostImages { get; set; }
         public DbSet<Comment> Comments { get; set; }

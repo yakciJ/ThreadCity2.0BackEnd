@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ThreadCity2._0BackEnd.Data;
 
@@ -11,9 +12,11 @@ using ThreadCity2._0BackEnd.Data;
 namespace ThreadCity2._0BackEnd.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241031054518_Update02")]
+    partial class Update02
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,13 +54,13 @@ namespace ThreadCity2._0BackEnd.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "21abf296-cdd0-491d-9aa0-dccee35536e8",
+                            Id = "1ab0d086-5734-4f94-b5c6-08e901c7381c",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "e0ad798f-6044-44d6-99ae-e0eec6fe1396",
+                            Id = "99aa450e-5221-4aa6-9fb3-b59945845ba6",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -357,7 +360,7 @@ namespace ThreadCity2._0BackEnd.Migrations
                     b.HasIndex("PostId")
                         .IsUnique();
 
-                    b.ToTable("PostScores");
+                    b.ToTable("postScores");
                 });
 
             modelBuilder.Entity("ThreadCity2._0BackEnd.Models.Entities.SeenPost", b =>

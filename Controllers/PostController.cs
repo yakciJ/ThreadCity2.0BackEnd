@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ThreadCity2._0BackEnd.Extensions;
+using ThreadCity2._0BackEnd.Helpers;
 using ThreadCity2._0BackEnd.Models.DTO.Post;
 using ThreadCity2._0BackEnd.Models.Entities;
 using ThreadCity2._0BackEnd.Services.Interfaces;
@@ -27,6 +28,32 @@ namespace ThreadCity2._0BackEnd.Controllers
         {
             var postDtos = await _postService.GetAllPostsAsync();
             return Ok(postDtos);
+        }
+
+        [HttpGet("newsfeed")]
+        [Authorize]
+        public async Task<IActionResult> GetUserNewsfeed([FromQuery] PostQuery postQuery)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var username = User.GetUsername();
+            var user = await _userManager.FindByNameAsync(username);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            var postDtos = await _postService.GetUserNewsfeedAsync(user, postQuery);
+            return Ok(postDtos);
+        }
+
+        [HttpPut("update-posts-scores")]
+        [Authorize]
+        public async Task<IActionResult> UpdatePostScores()
+        {
+            var result = await _postService.UpdatePostScoresAsync();
+            return result;
         }
 
         [HttpPost]
