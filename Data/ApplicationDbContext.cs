@@ -27,6 +27,9 @@ namespace ThreadCity2._0BackEnd.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Follow>()
+                .HasKey(lp => new { lp.FollowerUserId, lp.FollowedUserId });
+
+            modelBuilder.Entity<Follow>()
                 .HasOne(f => f.FollowerUser)
                 .WithMany(u => u.Following)
                 .HasForeignKey(f => f.FollowerUserId)
@@ -37,6 +40,9 @@ namespace ThreadCity2._0BackEnd.Data
                 .WithMany(u => u.Followers)
                 .HasForeignKey(f => f.FollowedUserId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<LikePost>()
+                .HasKey(lp => new { lp.UserId, lp.PostId });
 
             modelBuilder.Entity<LikePost>()
                 .HasOne(lp => lp.User)
@@ -85,6 +91,9 @@ namespace ThreadCity2._0BackEnd.Data
                 .WithMany(p => p.Shares)
                 .HasForeignKey(s => s.PostId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<LikeComment>()
+                .HasKey(lp => new { lp.UserId, lp.CommentId });
 
             modelBuilder.Entity<LikeComment>()
                 .HasOne(lc => lc.User)

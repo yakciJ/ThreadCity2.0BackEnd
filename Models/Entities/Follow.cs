@@ -5,14 +5,11 @@ namespace ThreadCity2._0BackEnd.Models.Entities
 {
     public class Follow
     {
-        [Key] // primary key
-        public int FollowId { get; set; } // Primary Key
+        public string FollowerUserId { get; set; } = string.Empty;
+        public User? FollowerUser { get; set; }
 
-        public string? FollowerUserId { get; set; } // Foreign Key
-        public User? FollowerUser { get; set; } // Navigation property
-
-        public string? FollowedUserId { get; set; } // Foreign Key
-        public User? FollowedUser { get; set; } // Navigation property
+        public string FollowedUserId { get; set; } = string.Empty;
+        public User? FollowedUser { get; set; }
 
     }
 }

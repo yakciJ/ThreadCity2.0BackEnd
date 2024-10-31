@@ -25,7 +25,7 @@ namespace ThreadCity2._0BackEnd.Services
             return post.ToPostDto();
         }
 
-        async Task<ICollection<PostDto>?> IPostService.GetAllPostsAsync()
+        public async Task<ICollection<PostDto>?> GetAllPostsAsync()
         {
             var posts = await _context.Posts.Include(p => p.User).ToListAsync();
             var postDtos = posts.Select(p => p.ToPostDto()).ToList();

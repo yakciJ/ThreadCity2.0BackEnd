@@ -1,16 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ThreadCity2._0BackEnd.Models.Entities
 {
     public class LikePost
     {
-        [Key] 
-        public int LikePostId { get; set; } // Primary Key
-        public string? UserId { get; set; } // Foreign Key
-        public User? User { get; set; } // Navigation property
+        public string UserId { get; set; } = string.Empty;
+        public User? User { get; set; }
 
-        public int PostId { get; set; } // Foreign Key
-        public Post? Post { get; set; } // Navigation property
+        public int PostId { get; set; }
+        public Post? Post { get; set; }
 
     }
 }
