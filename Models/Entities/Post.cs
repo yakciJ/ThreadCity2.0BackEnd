@@ -13,6 +13,7 @@ namespace ThreadCity2._0BackEnd.Models.Entities
         public required string Content { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public PostScore? PostScore { get; set; }
+        public ICollection<UserPostScore>? UserPostScores { get; set; }
 
         public ICollection<PostImage>? PostImages { get; set; }
         public ICollection<LinkPostTag>? LinkPostTags { get; set; }

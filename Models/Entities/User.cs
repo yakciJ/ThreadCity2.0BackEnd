@@ -17,6 +17,7 @@ namespace ThreadCity2._0BackEnd.Models.Entities
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
+        public ICollection<UserPostScore>? UserPostScores { get; set; }
         public ICollection<Follow>? Followers { get; set; }
         public ICollection<Follow>? Following { get; set; }
         public ICollection<Post>? Posts { get; set; }

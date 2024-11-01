@@ -56,6 +56,20 @@ namespace ThreadCity2._0BackEnd.Controllers
             return result;
         }
 
+        [HttpPut("update-user-post-scores")]
+        [Authorize]
+        public async Task<IActionResult> UpdateUserPostScores()
+        {
+            var username = User.GetUsername();
+            var user = await _userManager.FindByNameAsync(username);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            var result = await _postService.UpdateUserPostScoresAsync(user.Id);
+            return result;
+        }
+
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> CreatePost([FromBody] CreatePostRequestDto requestDto)

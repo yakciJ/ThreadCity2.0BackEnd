@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using ThreadCity2._0BackEnd.Data;
 using ThreadCity2._0BackEnd.Helpers;
 using ThreadCity2._0BackEnd.Models.DTO.Post;
@@ -38,15 +40,27 @@ namespace ThreadCity2._0BackEnd.Services
         public async Task<ICollection<PostDto>?> GetUserNewsfeedAsync(User user, PostQuery postQuery)
         {
             int skipNumber = (postQuery.PageNumber - 1) * postQuery.PageSize;
+            var postDtos = await (from post in _context.Posts
+                            join postScore in _context.PostScores on post.PostId equals postScore.PostId
+                            join userPostScore in _context.UserPostScores on post.PostId equals userPostScore.PostId
+                            where userPostScore.UserId == user.Id
+                            let rankingScore = (postScore.TimeScore * 0.6) +
+                                              (postScore.PopularityScore * 0.2) +
+                                              (userPostScore.RelevanceScore * 0.2)
+                            orderby rankingScore descending
+                            select new PostDto
+                            {
+                                UserId = post.UserId,
+                                Title = post.Title,
+                                Content = post.Content,
+                                CreatedAt = post.CreatedAt,
+                                AuthorUserName = user.UserName,
+                                AuthorFullName = user.FullName
+                            })
+               .Skip(skipNumber)
+               .Take(postQuery.PageSize)
+               .ToListAsync();
 
-            var posts = await _context.Posts
-                .Include(p => p.User)
-                .AsQueryable()
-                .OrderByDescending(p => p.PostScore != null ? p.PostScore.TimeScore * 0.6f + p.PostScore.PopularityScore * 0.2f : 0)
-                .Skip(skipNumber)
-                .Take(postQuery.PageSize)
-                .ToListAsync();
-            var postDtos = posts.Select(p => p.ToPostDto()).ToList();
 
             return postDtos;
         }
@@ -101,6 +115,144 @@ namespace ThreadCity2._0BackEnd.Services
             }
         }
 
+        public async Task<IActionResult> UpdateUserPostScoresAsync(string userId)
+        {
+            Dictionary<int, int> updatedRelevanceScore = new Dictionary<int, int>();
+            int likeScore = 1;
+            int commentScore = 2;
+            int userPostScore = 3;
+
+            var user = await _context.Users
+                .Include(u => u.Following!)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+
+            var settings = new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                Formatting = Formatting.Indented,
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            };
+
+            string json = JsonConvert.SerializeObject(user, settings);
+            Console.WriteLine(json);
+
+            if (user == null)
+            {
+                return new NotFoundObjectResult("User not found");
+            }
+
+            try
+            {
+                if (user.Following != null)
+                {
+                    foreach (var follow in user.Following)
+                    {
+                        var userLikePosts = await _context.Users
+                            .Select(u => new
+                            {
+                                u.Id,
+                                u.LikePosts
+                            })
+                            .FirstOrDefaultAsync(u => u.Id == follow.FollowedUserId);
+                        var likePosts = userLikePosts?.LikePosts;
+
+                        if (likePosts == null)
+                            continue;
+                        foreach (var likePost in likePosts)
+                        {
+                            int postId = likePost.PostId;
+                            IncreaseScores(updatedRelevanceScore, postId, likeScore);
+                        }
+
+
+                        var userComments = await _context.Users
+                            .Select(u => new
+                            {
+                                u.Id,
+                                u.Comments
+                            })
+                            .FirstOrDefaultAsync(u => u.Id == follow.FollowedUserId);
+                        var comments = userComments?.Comments;
+
+                        if (comments == null)
+                            continue;
+                        foreach (var cmt in comments)
+                        {
+                            List<int> consideredPostIds = new List<int>();
+                            int postId = cmt.PostId;
+                            if (consideredPostIds.Contains(postId))
+                                continue;
+                            IncreaseScores(updatedRelevanceScore, postId, commentScore);
+                            consideredPostIds.Add(postId);
+                        }
+
+
+                        var userPosts = await _context.Users
+                            .Select(u => new
+                            {
+                                u.Id,
+                                u.Posts
+                            })
+                            .FirstOrDefaultAsync(u => u.Id == follow.FollowedUserId);
+                        var posts = userPosts?.Posts;
+
+                        if (posts == null)
+                            continue;
+                        foreach (var post in posts)
+                        {
+                            var postId = post.PostId;
+                            IncreaseScores(updatedRelevanceScore, postId, userPostScore);
+                        }
+                    }
+                }
+
+                if (updatedRelevanceScore.Count == 0)
+                    return new OkObjectResult("No updates");
+
+                double max = updatedRelevanceScore.Values.Max();
+                double min = updatedRelevanceScore.Values.Min();
+
+                foreach (var score in updatedRelevanceScore)
+                {
+                    int postId = score.Key;
+                    double normalizeScore = Normalize(score.Value, max, min);
+                    var existedScore = await _context.UserPostScores.FirstOrDefaultAsync(u => u.UserId == user.Id && u.PostId == postId);
+                    if (existedScore == null)
+                    {
+                        var newScore = new UserPostScore
+                        {
+                            UserId = user.Id,
+                            PostId = postId,
+                            RelevanceScore = normalizeScore
+                        };
+                        await _context.UserPostScores.AddAsync(newScore);
+                    }
+                    else
+                    {
+                        existedScore.RelevanceScore = normalizeScore;
+                    }
+                }
+                await _context.SaveChangesAsync();
+                return new OkObjectResult("Update completed");
+            }
+            catch (Exception e)
+            {
+                return new ObjectResult(e) { StatusCode = 500 };
+            }
+        }
+
+        private static void IncreaseScores(Dictionary<int, int> scoresDict, int id, int scoreToIncrease)
+        {
+            if (scoresDict.TryGetValue(id, out int score))
+            {
+                scoresDict[id] += scoreToIncrease;
+            }
+            else
+            {
+                scoresDict.Add(id, scoreToIncrease);
+            }
+        }
+
         private double CalculatePostTimeScore(Post post)
         {
             return 1.0f / (DateTime.Now - post.CreatedAt).TotalSeconds;
@@ -122,5 +274,6 @@ namespace ThreadCity2._0BackEnd.Services
             }
             return (raw - min) / (max - min);
         }
+
     }
 }

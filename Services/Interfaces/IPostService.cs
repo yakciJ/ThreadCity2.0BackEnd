@@ -10,6 +10,7 @@ namespace ThreadCity2._0BackEnd.Services.Interfaces
         Task<ICollection<PostDto>?> GetAllPostsAsync();
         Task<ICollection<PostDto>?> GetUserNewsfeedAsync(User user ,PostQuery postQuery);
         Task<IActionResult> UpdatePostScoresAsync();
+        Task<IActionResult> UpdateUserPostScoresAsync(string userId);
 
         Task<PostDto> CreatePostAsync(string userId, CreatePostRequestDto requestDto);
     }
