@@ -54,8 +54,8 @@ namespace ThreadCity2._0BackEnd.Services
                                 Title = post.Title,
                                 Content = post.Content,
                                 CreatedAt = post.CreatedAt,
-                                AuthorUserName = user.UserName,
-                                AuthorFullName = user.FullName
+                                AuthorUserName = post.User.UserName,
+                                AuthorFullName = post.User.FullName
                             })
                .Skip(skipNumber)
                .Take(postQuery.PageSize)
