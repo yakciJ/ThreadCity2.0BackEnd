@@ -77,13 +77,13 @@ namespace ThreadCity2._0BackEnd.Services
             var user = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == loginDto.Username);
             if (user == null)
             {
-                return new UnauthorizedObjectResult("Invalid Username!");
+                return new UnauthorizedObjectResult("Tên đăng nhập hoặc mật khẩu không đúng!");
             }
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
             if (!result.Succeeded)
             {
-                return new UnauthorizedObjectResult("Username not found and/or password incorrect");
+                return new UnauthorizedObjectResult("Tên đăng nhập hoặc mật khẩu không đúng!");
             }
 
             return new OkObjectResult(
@@ -92,7 +92,8 @@ namespace ThreadCity2._0BackEnd.Services
                     UserName = user.UserName,
                     Email = user.Email,
                     Token = _tokenService.CreateToken(user)
-                });
+                }
+            );
 
         }
 
