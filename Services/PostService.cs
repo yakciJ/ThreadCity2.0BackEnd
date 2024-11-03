@@ -41,22 +41,26 @@ namespace ThreadCity2._0BackEnd.Services
         {
             int skipNumber = (postQuery.PageNumber - 1) * postQuery.PageSize;
             var postDtos = await (from post in _context.Posts
-                            join postScore in _context.PostScores on post.PostId equals postScore.PostId
-                            join userPostScore in _context.UserPostScores on post.PostId equals userPostScore.PostId
-                            where userPostScore.UserId == user.Id
-                            let rankingScore = (postScore.TimeScore * 0.6) +
-                                              (postScore.PopularityScore * 0.2) +
-                                              (userPostScore.RelevanceScore * 0.2)
-                            orderby rankingScore descending
-                            select new PostDto
-                            {
-                                UserId = post.UserId,
-                                Title = post.Title,
-                                Content = post.Content,
-                                CreatedAt = post.CreatedAt,
-                                AuthorUserName = post.User.UserName,
-                                AuthorFullName = post.User.FullName
-                            })
+                                  join postScore in _context.PostScores on post.PostId equals postScore.PostId into ps
+                                  from postScore in ps.DefaultIfEmpty()
+                                  join userPostScore in _context.UserPostScores.Where(x => x.UserId == user.Id) on post.PostId equals userPostScore.PostId into ups
+                                  from userPostScore in ups.DefaultIfEmpty()
+                                  let timeScore = postScore != null ? postScore.TimeScore : 0.0
+                                  let popularityScore = postScore != null ? postScore.PopularityScore : 0.0
+                                  let relevanceScore = userPostScore != null ? userPostScore.RelevanceScore : 0.0
+                                  let rankingScore = (timeScore * 0.6) +
+                                                    (popularityScore * 0.2) +
+                                                    (relevanceScore * 0.2)
+                                  orderby rankingScore descending
+                                  select new PostDto
+                                  {
+                                      UserId = post.UserId,
+                                      Title = post.Title,
+                                      Content = post.Content,
+                                      CreatedAt = post.CreatedAt,
+                                      AuthorUserName = post.User!.UserName,
+                                      AuthorFullName = post.User!.FullName
+                                  })
                .Skip(skipNumber)
                .Take(postQuery.PageSize)
                .ToListAsync();
