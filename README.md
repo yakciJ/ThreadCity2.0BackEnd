@@ -28,10 +28,10 @@ Create a file **appsettings.json** in the project root directory.
     "Kestrel": {
       "Endpoints": {
         "Http": {
-          "Url": "http://localhost:7135"
+          "Url": "https://localhost:7135"
         },
         "Http2": {
-          "Url": "http://192.168.0.103:7135"
+          "Url": "https://192.168.0.103:7135"
         }
       }
     }

@@ -120,6 +120,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 
-app.Urls.Add("http://localhost:7135");
-app.Urls.Add("http://192.168.0.103:7135"); 
+app.Urls.Add("https://localhost:7135");
+app.Urls.Add("https://192.168.0.103:7135"); 
 app.Run();
