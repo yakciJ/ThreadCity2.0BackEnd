@@ -121,5 +121,5 @@ app.MapControllers();
 
 
 app.Urls.Add("https://localhost:7135");
-app.Urls.Add("https://192.168.0.103:7135"); 
+app.Urls.Add("https://192.168.22.16:7135"); 
 app.Run();
