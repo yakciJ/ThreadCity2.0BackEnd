@@ -31,19 +31,26 @@ namespace ThreadCity2._0BackEnd.Controllers
         }
 
         [HttpGet("newsfeed")]
-        [Authorize]
         public async Task<IActionResult> GetUserNewsfeed([FromQuery] PostQuery postQuery)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var username = User.GetUsername();
-            var user = await _userManager.FindByNameAsync(username);
-            if (user == null)
+            var username = "";
+            try
             {
-                return NotFound();
+                username = User.GetUsername();
             }
+            catch (Exception)
+            {
+                username = "";
+            }
+            var user = await _userManager.FindByNameAsync(username);
+            //if (user == null)
+            //{
+            //    return NotFound();
+            //}
             var postDtos = await _postService.GetUserNewsfeedAsync(user, postQuery);
             return Ok(postDtos);
         }
