@@ -1,7 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using ThreadCity2._0BackEnd.Extensions;
+using ThreadCity2._0BackEnd.Helpers;
 using ThreadCity2._0BackEnd.Models.DTO.User;
+using ThreadCity2._0BackEnd.Models.Entities;
+using ThreadCity2._0BackEnd.Models.Mappers;
 using ThreadCity2._0BackEnd.Services.Interfaces;
 
 namespace ThreadCity2._0BackEnd.Controllers
@@ -11,11 +16,19 @@ namespace ThreadCity2._0BackEnd.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IPostService _postService;
+        private readonly UserManager<User> _userManager;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, IPostService postService, UserManager<User> userManager)
         {
             _userService = userService;
+            _postService = postService;
+            _userManager = userManager;
         }
+
+
+
+
         // create account
         [HttpPost]
         public async Task<IActionResult> CreateUser(CreateUserDto userDto)
@@ -70,6 +83,54 @@ namespace ThreadCity2._0BackEnd.Controllers
             }
         }
 
+        [HttpGet("profile")]
+        [Authorize]
+        public async Task<IActionResult> GetUserProfile()
+        {
+            var username = User.GetUsername();
+            var user = await _userManager.FindByNameAsync(username);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return Ok(user.ToUserDtoFromUser());
+        }
+
+        [HttpGet("profile/posts")]
+        [Authorize]
+        public async Task<IActionResult> GetUserPost([FromQuery] PostQuery postQuery)
+        {
+            var username = User.GetUsername();
+            var user = await _userManager.FindByNameAsync(username);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            var postDtos = await _postService.GetPostsByUserIdAsync(user.Id, postQuery);
+            return Ok(postDtos);
+        }
+
+        [HttpPut("profile")]
+        public async Task<IActionResult> UpdateUserProfile([FromBody] UpdateUserRequestDto requestDto)
+        {
+            var username = User.GetUsername();
+            var user = await _userManager.FindByNameAsync(username);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                var userDto = await _userService.UpdateUser(user.Id, requestDto);
+                return Ok(userDto);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
         // deleted user by id
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser([FromRoute] string id)
@@ -90,12 +151,12 @@ namespace ThreadCity2._0BackEnd.Controllers
         }
         // update user by id
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser([FromRoute]string id, [FromBody] UserDto userDto)
+        public async Task<IActionResult> UpdateUser([FromRoute]string id, [FromBody] UpdateUserRequestDto requestDto)
         {
             try
             {
-                await _userService.UpdateUser(id, userDto);
-                return Ok();
+                var userDto = await _userService.UpdateUser(id, requestDto);
+                return Ok(userDto);
             }
             catch (Exception e)
             {

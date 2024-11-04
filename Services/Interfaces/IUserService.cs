@@ -10,7 +10,7 @@ namespace ThreadCity2._0BackEnd.Services.Interfaces
         Task<UserDto> GetUserById(string id);
         Task<UserDto> GetUserByName(string name);
         Task<string> DeleteUser(string id);
-        Task<UserDto> UpdateUser(string id, UserDto userDto);
+        Task<UserDto> UpdateUser(string id, UpdateUserRequestDto userDto);
         Task<IActionResult> Register(RegisterDto registerDto);
         Task<IActionResult> Login(LoginDto loginDto);
     }

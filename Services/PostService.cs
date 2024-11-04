@@ -279,5 +279,24 @@ namespace ThreadCity2._0BackEnd.Services
             return (raw - min) / (max - min);
         }
 
+        public async Task<ICollection<PostDto>?> GetPostsByUserIdAsync(string userId, PostQuery postQuery)
+        {
+            var user = await _context.Users
+                .Include(u => u.Posts)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+            var posts = user?.Posts?.ToList();
+            if (posts == null)
+            {
+                return [];
+            }
+
+            int skipNumber = (postQuery.PageNumber - 1) * postQuery.PageSize;
+            return posts
+                .OrderByDescending(post => post.CreatedAt)
+                .Select(p => p.ToPostDto())
+                .Skip(skipNumber)
+                .Take(postQuery.PageSize)
+                .ToList();
+        }
     }
 }

@@ -141,13 +141,9 @@ namespace ThreadCity2._0BackEnd.Services
         }
 
 
-        public async Task<UserDto> UpdateUser(string id, UserDto userDto)
+        public async Task<UserDto> UpdateUser(string id, UpdateUserRequestDto requestDto)
         {
-            if (id != userDto.UserId)
-            {
-                throw new Exception("Id mismatch");
-            }
-            else if (userDto == null)
+            if (requestDto == null)
             {
                 throw new Exception("No input data");
             }
@@ -158,9 +154,13 @@ namespace ThreadCity2._0BackEnd.Services
             }
             else
             {
-                _context.Users.Update(userDto.ToUserFromUserDto());
+                user.FullName = requestDto.FullName;
+                user.Email = requestDto.Email;
+                user.PhoneNumber = requestDto.Phone;
+                user.AvatarImgId = requestDto.AvatarImgId;
+                user.CoverImgId = requestDto.CoverImgId;
                 await _context.SaveChangesAsync();
-                return userDto;
+                return user.ToUserDtoFromUser();
             }
         }
     }
