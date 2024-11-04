@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using System.Text;
 using ThreadCity2._0BackEnd.Data;
 using ThreadCity2._0BackEnd.Helpers;
 using ThreadCity2._0BackEnd.Models.DTO.Post;
@@ -297,6 +299,46 @@ namespace ThreadCity2._0BackEnd.Services
                 .Skip(skipNumber)
                 .Take(postQuery.PageSize)
                 .ToList();
+        }
+
+        public async Task<ICollection<PostDto>?> SearchPostsAsync(SearchPostsQuery searchPostsQuery)
+        {
+            int skipNumber = (searchPostsQuery.PageNumber - 1) * searchPostsQuery.PageSize;
+            var searchTerm = "%" + searchPostsQuery.SearchTerm + "%";
+            var postDtos = await _context.Posts
+                .FromSqlRaw("SELECT * FROM Posts WHERE Title COLLATE SQL_Latin1_General_CP1_CI_AI LIKE {0}", searchTerm)
+                .OrderByDescending(post => post.CreatedAt)
+                .Select(post => post.ToPostDto())
+                .Skip(skipNumber)
+                .Take(searchPostsQuery.PageSize)
+                .ToListAsync();
+
+            return postDtos;
+
+            //var searchTerm = "%" + searchPostsQuery.SearchTerm + "%";
+            //var postDtos = await _context.Posts
+            //    .Where(post => 
+            //                   EF.Functions.Like(post.Title, searchTerm))
+            //    .OrderByDescending(post => post.CreatedAt)
+            //    .Select(post => post.ToPostDto())
+            //    .Skip(skipNumber)
+            //    .Take(searchPostsQuery.PageSize)
+            //    .ToListAsync();
+
+
+
+            //var normalizedSearchTerm = searchPostsQuery.SearchTerm
+            //    .Normalize(NormalizationForm.FormD)
+            //    .ToLowerInvariant();
+            //var postDtos = await _context.Posts
+            //    .Where(post => EF.Functions.Collate(
+            //        post.Title.Normalize(NormalizationForm.FormD),
+            //        "Vietnamese_CI_AS").Contains(normalizedSearchTerm, StringComparison.CurrentCultureIgnoreCase))
+            //    .OrderByDescending(post => post.CreatedAt)
+            //    .Select(post => post.ToPostDto())
+            //    .ToListAsync();
+
+            //return postDtos;
         }
     }
 }
