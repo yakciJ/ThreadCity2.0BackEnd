@@ -48,6 +48,13 @@ namespace ThreadCity2._0BackEnd.Controllers
             return Ok(postDtos);
         }
 
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchPosts([FromQuery] SearchPostsQuery searchPostsQuery)
+        {
+            var postDtos = await _postService.SearchPostsAsync(searchPostsQuery);
+            return Ok(postDtos);
+        }
+
         [HttpPut("update-posts-scores")]
         [Authorize]
         public async Task<IActionResult> UpdatePostScores()
