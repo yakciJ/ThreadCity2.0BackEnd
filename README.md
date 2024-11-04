@@ -25,9 +25,19 @@ Create a file **appsettings.json** in the project root directory.
         "Audience": "https://localhost:7135",
         "SigningKey": "Your-Key"
     }
+    "Kestrel": {
+      "Endpoints": {
+        "Http": {
+          "Url": "http://localhost:7135"
+        },
+        "Http2": {
+          "Url": "http://192.168.0.103:7135"
+        }
+      }
+    }
 }
 ```
 
-### 3. Customize the "DefaultSQLConnection", "SigningKey" configurations
+### 3. Customize the "DefaultSQLConnection", "SigningKey", Http2 Url to match your ip address configurations
 
 
