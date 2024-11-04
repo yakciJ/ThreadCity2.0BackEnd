@@ -307,12 +307,12 @@ namespace ThreadCity2._0BackEnd.Services
             var searchTerm = "%" + searchPostsQuery.SearchTerm + "%";
             var postDtos = await _context.Posts
                 .FromSqlRaw("SELECT * FROM Posts WHERE Title COLLATE SQL_Latin1_General_CP1_CI_AI LIKE {0}", searchTerm)
+                .Include(p => p.User)
                 .OrderByDescending(post => post.CreatedAt)
                 .Select(post => post.ToPostDto())
                 .Skip(skipNumber)
                 .Take(searchPostsQuery.PageSize)
                 .ToListAsync();
-
             return postDtos;
 
             //var searchTerm = "%" + searchPostsQuery.SearchTerm + "%";
