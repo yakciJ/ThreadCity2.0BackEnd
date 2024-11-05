@@ -16,7 +16,7 @@ namespace ThreadCity2._0BackEnd.Models.Mappers
                 CreatedAt = post.CreatedAt,
                 AuthorUserName = post.User?.UserName,
                 AuthorFullName = post.User?.FullName,
-                LightCount = post.LikePosts != null ? post.LikePosts!.Count : 0,
+                LikeCount = post.LikePosts != null ? post.LikePosts!.Count : 0,
                 CommentCount = post.Comments != null ? post.Comments!.Count : 0
             };
         }

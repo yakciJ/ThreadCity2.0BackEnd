@@ -9,7 +9,7 @@
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public string? AuthorUserName { get; set; }
         public string? AuthorFullName { get; set; }
-        public int LightCount { get; set; }
+        public int LikeCount { get; set; }
         public int CommentCount { get; set; }
     }
 }
