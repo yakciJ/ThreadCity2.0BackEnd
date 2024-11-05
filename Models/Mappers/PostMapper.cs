@@ -9,12 +9,15 @@ namespace ThreadCity2._0BackEnd.Models.Mappers
         {
             return new PostDto
             {
+                PostId = post.PostId,
                 UserId = post.UserId,
                 Title = post.Title,
                 Content = post.Content,
                 CreatedAt = post.CreatedAt,
                 AuthorUserName = post.User?.UserName,
                 AuthorFullName = post.User?.FullName,
+                LightCount = post.LikePosts != null ? post.LikePosts!.Count : 0,
+                CommentCount = post.Comments != null ? post.Comments!.Count : 0
             };
         }
 

@@ -56,12 +56,15 @@ namespace ThreadCity2._0BackEnd.Services
                                   orderby rankingScore descending
                                   select new PostDto
                                   {
+                                      PostId = post.PostId,
                                       UserId = post.UserId,
                                       Title = post.Title,
                                       Content = post.Content,
                                       CreatedAt = post.CreatedAt,
                                       AuthorUserName = post.User!.UserName,
-                                      AuthorFullName = post.User!.FullName     
+                                      AuthorFullName = post.User!.FullName,
+                                      LightCount = post.LikePosts != null ? post.LikePosts!.Count : 0,
+                                      CommentCount = post.Comments != null ? post.Comments!.Count : 0
                                   })
                .Skip(skipNumber)
                .Take(postQuery.PageSize)
@@ -283,21 +286,33 @@ namespace ThreadCity2._0BackEnd.Services
 
         public async Task<ICollection<PostDto>?> GetPostsByUserIdAsync(string userId, PostQuery postQuery)
         {
-            var user = await _context.Users
-                .Include(u => u.Posts)
-                .FirstOrDefaultAsync(u => u.Id == userId);
-            var posts = user?.Posts?.ToList();
+            int skipNumber = (postQuery.PageNumber - 1) * postQuery.PageSize;
+            var posts = await (from post in _context.Posts.Where(p => p.UserId == userId)
+                               select new PostDto
+                               {
+                                   PostId = post.PostId,
+                                   UserId = post.UserId,
+                                   Title = post.Title,
+                                   Content = post.Content,
+                                   CreatedAt = post.CreatedAt,
+                                   AuthorUserName = post.User!.UserName,
+                                   AuthorFullName = post.User!.FullName,
+                                   LightCount = post.LikePosts != null ? post.LikePosts!.Count : 0,
+                                   CommentCount = post.Comments != null ? post.Comments!.Count : 0
+                               })
+                               .OrderByDescending(post => post.CreatedAt)
+                               .Skip(skipNumber)
+                               .Take(postQuery.PageSize)
+                               .ToListAsync();
+
+
             if (posts == null)
             {
                 return [];
             }
 
-            int skipNumber = (postQuery.PageNumber - 1) * postQuery.PageSize;
             return posts
-                .OrderByDescending(post => post.CreatedAt)
-                .Select(p => p.ToPostDto())
-                .Skip(skipNumber)
-                .Take(postQuery.PageSize)
+                //.Select(p => p.ToPostDto
                 .ToList();
         }
 
@@ -308,6 +323,8 @@ namespace ThreadCity2._0BackEnd.Services
             var postDtos = await _context.Posts
                 .FromSqlRaw("SELECT * FROM Posts WHERE Title COLLATE SQL_Latin1_General_CP1_CI_AI LIKE {0}", searchTerm)
                 .Include(p => p.User)
+                .Include(p => p.LikePosts)
+                .Include(p => p.Comments)
                 .OrderByDescending(post => post.CreatedAt)
                 .Select(post => post.ToPostDto())
                 .Skip(skipNumber)
