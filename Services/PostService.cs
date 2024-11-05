@@ -6,6 +6,7 @@ using Newtonsoft.Json.Serialization;
 using System.Text;
 using ThreadCity2._0BackEnd.Data;
 using ThreadCity2._0BackEnd.Helpers;
+using ThreadCity2._0BackEnd.Models.DTO.Like;
 using ThreadCity2._0BackEnd.Models.DTO.Post;
 using ThreadCity2._0BackEnd.Models.Entities;
 using ThreadCity2._0BackEnd.Models.Mappers;
@@ -64,7 +65,8 @@ namespace ThreadCity2._0BackEnd.Services
                                       AuthorUserName = post.User!.UserName,
                                       AuthorFullName = post.User!.FullName,
                                       LikeCount = post.LikePosts != null ? post.LikePosts!.Count : 0,
-                                      CommentCount = post.Comments != null ? post.Comments!.Count : 0
+                                      CommentCount = post.Comments != null ? post.Comments!.Count : 0,
+                                      IsLiked = post.LikePosts != null ? (post.LikePosts!.FirstOrDefault(l => l.UserId == user.Id) != null ? true : false) : false,
                                   })
                .Skip(skipNumber)
                .Take(postQuery.PageSize)
@@ -298,7 +300,8 @@ namespace ThreadCity2._0BackEnd.Services
                                    AuthorUserName = post.User!.UserName,
                                    AuthorFullName = post.User!.FullName,
                                    LikeCount = post.LikePosts != null ? post.LikePosts!.Count : 0,
-                                   CommentCount = post.Comments != null ? post.Comments!.Count : 0
+                                   CommentCount = post.Comments != null ? post.Comments!.Count : 0,
+                                   IsLiked = post.LikePosts != null ? (post.LikePosts!.FirstOrDefault(l => l.UserId == userId) != null ? true : false) : false,
                                })
                                .OrderByDescending(post => post.CreatedAt)
                                .Skip(skipNumber)
@@ -356,6 +359,49 @@ namespace ThreadCity2._0BackEnd.Services
             //    .ToListAsync();
 
             //return postDtos;
+        }
+
+        public async Task<IActionResult> LikeOrDislikePostAsync(int postId, string userId)
+        {
+            try
+            {
+                var post = await _context.Posts.FirstOrDefaultAsync(p => p.PostId == postId);
+                if (post == null)
+                {
+                    return new NotFoundObjectResult("Post not found");
+                }
+                var existedLikePost = await _context.LikePosts.FirstOrDefaultAsync(l => l.UserId == userId && l.PostId == postId);
+                bool isLiked = true;
+                if (existedLikePost != null)
+                {
+                    _context.Remove(existedLikePost);
+                    await _context.SaveChangesAsync();
+                    isLiked = false;
+                }
+                else
+                {
+                    var newLikePost = new LikePost
+                    {
+                        UserId = userId,
+                        PostId = postId
+                    };
+
+                    await _context.LikePosts.AddAsync(newLikePost);
+                    await _context.SaveChangesAsync();
+                }
+
+                var likeCount = await _context.LikePosts.Where(l => l.PostId == postId).CountAsync();
+                return new OkObjectResult(new LikeResponseDto
+                {
+                    IsLiked = isLiked,
+                    LikeCount = likeCount
+                });
+
+            }
+            catch (Exception e)
+            {
+                return new ObjectResult(e) { StatusCode = 500 };
+            }
         }
     }
 }

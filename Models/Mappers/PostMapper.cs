@@ -17,7 +17,8 @@ namespace ThreadCity2._0BackEnd.Models.Mappers
                 AuthorUserName = post.User?.UserName,
                 AuthorFullName = post.User?.FullName,
                 LikeCount = post.LikePosts != null ? post.LikePosts!.Count : 0,
-                CommentCount = post.Comments != null ? post.Comments!.Count : 0
+                CommentCount = post.Comments != null ? post.Comments!.Count : 0,
+                IsLiked = post.LikePosts != null ? (post.LikePosts!.FirstOrDefault(l => l.UserId == post.UserId) != null ? true : false) : false,
             };
         }
 
