@@ -19,5 +19,14 @@ namespace ThreadCity2._0BackEnd.Models.Mappers
             };
         }
 
+        public static Comment ToCommentFromCreate(this CreateCommentRequestDto comment)
+        {
+            return new Comment
+            {
+                PostId = comment.PostId,
+                Content = comment.Content
+            };
+        }
+
     }
 }

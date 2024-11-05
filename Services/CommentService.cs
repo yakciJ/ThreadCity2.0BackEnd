@@ -15,6 +15,16 @@ namespace ThreadCity2._0BackEnd.Services
         {
             _context = context;
         }
+
+        public async Task<CommentDto> CreateCommentAsync(string userId, CreateCommentRequestDto requestDto)
+        {
+            var comment = requestDto.ToCommentFromCreate();
+            comment.UserId = userId;
+            await _context.Comments.AddAsync(comment);
+            await _context.SaveChangesAsync();
+            return comment.ToCommentDto();
+        }
+
         public async Task<ICollection<CommentDto>?> GetCommentsByPostIdAsync(int postId, CommentQuery commentQuery)
         {
             int skipNumber = (commentQuery.PageNumber - 1) * commentQuery.PageSize;

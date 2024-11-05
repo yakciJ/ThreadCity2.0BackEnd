@@ -10,7 +10,7 @@
         public Post? Post { get; set; } // Navigation property
 
         public required string Content { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         public ICollection<LikeComment>? LikeComments { get; set; }
 
