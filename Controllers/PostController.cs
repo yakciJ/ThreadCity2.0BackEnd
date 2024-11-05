@@ -102,5 +102,12 @@ namespace ThreadCity2._0BackEnd.Controllers
             var postDto = await _postService.CreatePostAsync(user.Id, requestDto);
             return Ok(postDto);
         }
+
+        [HttpDelete("{postId}")]
+        [Authorize]
+        public async Task<IActionResult> DeletePost([FromRoute] int postId)
+        {
+            return await _postService.DeletePostAsync(postId);
+        }
     }
 }

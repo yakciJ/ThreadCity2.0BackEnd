@@ -403,5 +403,17 @@ namespace ThreadCity2._0BackEnd.Services
                 return new ObjectResult(e) { StatusCode = 500 };
             }
         }
+
+        public async Task<IActionResult> DeletePostAsync(int postId)
+        {
+            var post = await _context.Posts.FirstOrDefaultAsync(p => p.PostId == postId);
+            if (post == null)
+            {
+                return new NotFoundObjectResult("Post not found");
+            }
+            _context.Remove(post);
+            await _context.SaveChangesAsync();
+            return new OkObjectResult("post deleted");
+        }
     }
 }

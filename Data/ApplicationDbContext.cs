@@ -35,13 +35,13 @@ namespace ThreadCity2._0BackEnd.Data
                 .HasOne(f => f.FollowerUser)
                 .WithMany(u => u.Following)
                 .HasForeignKey(f => f.FollowerUserId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Follow>()
                 .HasOne(f => f.FollowedUser)
                 .WithMany(u => u.Followers)
                 .HasForeignKey(f => f.FollowedUserId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<LikePost>()
                 .HasKey(lp => new { lp.UserId, lp.PostId });
@@ -50,7 +50,7 @@ namespace ThreadCity2._0BackEnd.Data
                 .HasOne(lp => lp.User)
                 .WithMany(u => u.LikePosts)
                 .HasForeignKey(lp => lp.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<LikePost>()
                 .HasOne(lp => lp.Post)
@@ -62,7 +62,7 @@ namespace ThreadCity2._0BackEnd.Data
                 .HasOne(c => c.User)
                 .WithMany(u => u.Comments)
                 .HasForeignKey(c => c.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Comment>()
                 .HasOne(c => c.Post)
@@ -74,7 +74,7 @@ namespace ThreadCity2._0BackEnd.Data
                 .HasOne(sp => sp.User)
                 .WithMany(u => u.SeenPosts)
                 .HasForeignKey(sp => sp.UserId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<SeenPost>()
                 .HasOne(sp => sp.Post)
@@ -86,7 +86,7 @@ namespace ThreadCity2._0BackEnd.Data
                 .HasOne(s => s.User)
                 .WithMany(u => u.Shares)
                 .HasForeignKey(s => s.UserId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Share>()
                 .HasOne(s => s.Post)
@@ -101,7 +101,7 @@ namespace ThreadCity2._0BackEnd.Data
                 .HasOne(lc => lc.User)
                 .WithMany(u => u.LikeComments)
                 .HasForeignKey(lc => lc.UserId)
-                .OnDelete(DeleteBehavior.NoAction); // Changed from Cascade to NoAction
+                .OnDelete(DeleteBehavior.Cascade); // Changed from Cascade to NoAction
 
             modelBuilder.Entity<LikeComment>()
                 .HasOne(lc => lc.Comment)
