@@ -101,6 +101,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<ICommentService, CommentService>();
 
 var app = builder.Build();
 
@@ -119,4 +120,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+//app.Urls.Add("http://localhost:7135");
+//app.Urls.Add("http://192.168.0.103:7135");
 app.Run();

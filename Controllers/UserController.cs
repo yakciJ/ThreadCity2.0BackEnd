@@ -110,7 +110,7 @@ namespace ThreadCity2._0BackEnd.Controllers
             return Ok(postDtos);
         }
 
-        [HttpGet("profile/username={username}")]
+        [HttpGet("profile/by-username/{username}")]
         public async Task<IActionResult> GetUserProfileByUserName([FromRoute] string username)
         {
             var user = await _userManager.FindByNameAsync(username);
@@ -121,7 +121,7 @@ namespace ThreadCity2._0BackEnd.Controllers
             return Ok(user.ToUserDtoFromUser());
         }
 
-        [HttpGet("profile/username={username}/posts")]
+        [HttpGet("profile/by-username/{username}/posts")]
         public async Task<IActionResult> GetUserPost([FromRoute] string username, [FromQuery] PostQuery postQuery)
         {
             var user = await _userManager.FindByNameAsync(username);

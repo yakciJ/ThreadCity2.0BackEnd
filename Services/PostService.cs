@@ -66,7 +66,7 @@ namespace ThreadCity2._0BackEnd.Services
                                       AuthorFullName = post.User!.FullName,
                                       LikeCount = post.LikePosts != null ? post.LikePosts!.Count : 0,
                                       CommentCount = post.Comments != null ? post.Comments!.Count : 0,
-                                      IsLiked = post.LikePosts != null ? (post.LikePosts!.FirstOrDefault(l => l.UserId == user.Id) != null ? true : false) : false,
+                                      IsLiked = post.LikePosts != null ? (post.LikePosts!.FirstOrDefault(l => l.UserId == (user != null ? user.Id : "")) != null ? true : false) : false,
                                   })
                .Skip(skipNumber)
                .Take(postQuery.PageSize)
