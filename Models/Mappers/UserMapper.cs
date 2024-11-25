@@ -27,7 +27,8 @@ namespace ThreadCity2._0BackEnd.Models.Mappers
                 Phone = user.PhoneNumber,
                 AvatarImgId = user.AvatarImgId,
                 CoverImgId = user.CoverImgId,
-                CreatedAt = user.CreatedAt
+                CreatedAt = user.CreatedAt,
+                Bio = user.Bio
             };
         }
 

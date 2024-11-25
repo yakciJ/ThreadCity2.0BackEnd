@@ -11,5 +11,7 @@ namespace ThreadCity2._0BackEnd.Models.DTO.User
         public int AvatarImgId { get; set; }
         public int CoverImgId { get; set; }
 
+        public string? Bio { get; set; }
+
     }
 }

@@ -16,6 +16,7 @@ namespace ThreadCity2._0BackEnd.Models.Entities
         public Image? CoverImage { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public string? Bio { get; set; }
 
         public ICollection<UserPostScore>? UserPostScores { get; set; }
         public ICollection<Follow>? Followers { get; set; }

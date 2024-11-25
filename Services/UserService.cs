@@ -159,6 +159,7 @@ namespace ThreadCity2._0BackEnd.Services
                 user.PhoneNumber = requestDto.Phone;
                 user.AvatarImgId = requestDto.AvatarImgId;
                 user.CoverImgId = requestDto.CoverImgId;
+                user.Bio = requestDto.Bio;
                 await _context.SaveChangesAsync();
                 return user.ToUserDtoFromUser();
             }
