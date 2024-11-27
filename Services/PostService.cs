@@ -29,13 +29,13 @@ namespace ThreadCity2._0BackEnd.Services
             post.UserId = userId;
             await _context.Posts.AddAsync(post);
             await _context.SaveChangesAsync();
-            return post.ToPostDto();
+            return post.ToPostDto("");
         }
 
         public async Task<ICollection<PostDto>?> GetAllPostsAsync()
         {
             var posts = await _context.Posts.Include(p => p.User).ToListAsync();
-            var postDtos = posts.Select(p => p.ToPostDto()).ToList();
+            var postDtos = posts.Select(p => p.ToPostDto("")).ToList();
 
             return postDtos;
         }
@@ -319,7 +319,7 @@ namespace ThreadCity2._0BackEnd.Services
                 .ToList();
         }
 
-        public async Task<ICollection<PostDto>?> SearchPostsAsync(SearchPostsQuery searchPostsQuery)
+        public async Task<ICollection<PostDto>?> SearchPostsAsync(string userId, SearchPostsQuery searchPostsQuery)
         {
             int skipNumber = (searchPostsQuery.PageNumber - 1) * searchPostsQuery.PageSize;
             var searchTerm = "%" + searchPostsQuery.SearchTerm + "%";
@@ -329,7 +329,7 @@ namespace ThreadCity2._0BackEnd.Services
                 .Include(p => p.LikePosts)
                 .Include(p => p.Comments)
                 .OrderByDescending(post => post.CreatedAt)
-                .Select(post => post.ToPostDto())
+                .Select(post => post.ToPostDto(userId))
                 .Skip(skipNumber)
                 .Take(searchPostsQuery.PageSize)
                 .ToListAsync();

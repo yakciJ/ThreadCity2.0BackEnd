@@ -14,7 +14,7 @@ namespace ThreadCity2._0BackEnd.Services.Interfaces
 
         Task<PostDto> CreatePostAsync(string userId, CreatePostRequestDto requestDto);
         Task<ICollection<PostDto>?> GetPostsByUserIdAsync(string userId, PostQuery postQuery);
-        Task<ICollection<PostDto>?> SearchPostsAsync(SearchPostsQuery searchPostsQuery);
+        Task<ICollection<PostDto>?> SearchPostsAsync(string userId, SearchPostsQuery searchPostsQuery);
         Task<IActionResult> LikeOrDislikePostAsync(int postId, string userId);
         Task<IActionResult> DeletePostAsync(int postId);
     }

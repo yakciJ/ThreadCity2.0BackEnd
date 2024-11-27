@@ -5,7 +5,7 @@ namespace ThreadCity2._0BackEnd.Models.Mappers
 {
     public static class PostMapper
     {
-        public static PostDto ToPostDto(this Post post)
+        public static PostDto ToPostDto(this Post post, string userId)
         {
             return new PostDto
             {
@@ -18,7 +18,7 @@ namespace ThreadCity2._0BackEnd.Models.Mappers
                 AuthorFullName = post.User?.FullName,
                 LikeCount = post.LikePosts != null ? post.LikePosts!.Count : 0,
                 CommentCount = post.Comments != null ? post.Comments!.Count : 0,
-                IsLiked = post.LikePosts != null ? (post.LikePosts!.FirstOrDefault(l => l.UserId == post.UserId) != null ? true : false) : false,
+                IsLiked = post.LikePosts != null ? (post.LikePosts!.FirstOrDefault(l => l.UserId == userId) != null ? true : false) : false,
             };
         }
 

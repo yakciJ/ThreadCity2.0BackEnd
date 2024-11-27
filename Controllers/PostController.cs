@@ -58,7 +58,23 @@ namespace ThreadCity2._0BackEnd.Controllers
         [HttpGet("search")]
         public async Task<IActionResult> SearchPosts([FromQuery] SearchPostsQuery searchPostsQuery)
         {
-            var postDtos = await _postService.SearchPostsAsync(searchPostsQuery);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var username = "";
+            try
+            {
+                username = User.GetUsername();
+            }
+            catch (Exception)
+            {
+                username = "";
+            }
+            var user = await _userManager.FindByNameAsync(username);
+            var userId = user != null ? user.Id : "";
+
+            var postDtos = await _postService.SearchPostsAsync(userId, searchPostsQuery);
             return Ok(postDtos);
         }
 
