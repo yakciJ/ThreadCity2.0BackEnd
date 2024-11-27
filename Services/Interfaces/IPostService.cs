@@ -13,7 +13,7 @@ namespace ThreadCity2._0BackEnd.Services.Interfaces
         Task<IActionResult> UpdateUserPostScoresAsync(string userId);
 
         Task<PostDto> CreatePostAsync(string userId, CreatePostRequestDto requestDto);
-        Task<ICollection<PostDto>?> GetPostsByUserIdAsync(string userId, PostQuery postQuery);
+        Task<ICollection<PostDto>?> GetPostsByUserIdAsync(string userId, PostQuery postQuery, string currentUserId);
         Task<ICollection<PostDto>?> SearchPostsAsync(string userId, SearchPostsQuery searchPostsQuery);
         Task<IActionResult> LikeOrDislikePostAsync(int postId, string userId);
         Task<IActionResult> DeletePostAsync(int postId);

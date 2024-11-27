@@ -106,7 +106,7 @@ namespace ThreadCity2._0BackEnd.Controllers
             {
                 return NotFound();
             }
-            var postDtos = await _postService.GetPostsByUserIdAsync(user.Id, postQuery);
+            var postDtos = await _postService.GetPostsByUserIdAsync(user.Id, postQuery, user.Id);
             return Ok(postDtos);
         }
 
@@ -129,7 +129,18 @@ namespace ThreadCity2._0BackEnd.Controllers
             {
                 return NotFound();
             }
-            var postDtos = await _postService.GetPostsByUserIdAsync(user.Id, postQuery);
+            var currentUsername = "";
+            try
+            {
+                currentUsername = User.GetUsername();
+            }
+            catch (Exception)
+            {
+                currentUsername = "";
+            }
+            var currentUser = await _userManager.FindByNameAsync(currentUsername);
+            var currentUserId = currentUser != null ? currentUser.Id : "";
+            var postDtos = await _postService.GetPostsByUserIdAsync(user.Id, postQuery, currentUserId);
             return Ok(postDtos);
         }
 

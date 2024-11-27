@@ -286,7 +286,7 @@ namespace ThreadCity2._0BackEnd.Services
             return (raw - min) / (max - min);
         }
 
-        public async Task<ICollection<PostDto>?> GetPostsByUserIdAsync(string userId, PostQuery postQuery)
+        public async Task<ICollection<PostDto>?> GetPostsByUserIdAsync(string userId, PostQuery postQuery, string currentUserId)
         {
             int skipNumber = (postQuery.PageNumber - 1) * postQuery.PageSize;
             var posts = await (from post in _context.Posts.Where(p => p.UserId == userId)
@@ -301,7 +301,7 @@ namespace ThreadCity2._0BackEnd.Services
                                    AuthorFullName = post.User!.FullName,
                                    LikeCount = post.LikePosts != null ? post.LikePosts!.Count : 0,
                                    CommentCount = post.Comments != null ? post.Comments!.Count : 0,
-                                   IsLiked = post.LikePosts != null ? (post.LikePosts!.FirstOrDefault(l => l.UserId == userId) != null ? true : false) : false,
+                                   IsLiked = post.LikePosts != null ? (post.LikePosts!.FirstOrDefault(l => l.UserId == currentUserId) != null ? true : false) : false,
                                })
                                .OrderByDescending(post => post.CreatedAt)
                                .Skip(skipNumber)
