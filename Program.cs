@@ -50,8 +50,38 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 });
 
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection")));
+//builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection")));
+
+var dbProvider = builder.Configuration["DatabaseProvider"] ?? "SqlServer";
+
+if (dbProvider.Equals("SqlServer", StringComparison.OrdinalIgnoreCase))
+{
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseSqlServer(
+            builder.Configuration.GetConnectionString("SqlServerConnection"),
+            sqlOptions => sqlOptions.MigrationsAssembly("ThreadCity2.0BackEnd")
+        ));
+}
+else if (dbProvider.Equals("Postgres", StringComparison.OrdinalIgnoreCase))
+{
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseNpgsql(
+            builder.Configuration.GetConnectionString("PostgresConnection"),
+            npgsqlOptions =>
+            {
+                npgsqlOptions.MigrationsAssembly("Migrations.PostgreSQL");
+                npgsqlOptions.EnableRetryOnFailure(
+                    maxRetryCount: 5,
+                    maxRetryDelay: TimeSpan.FromSeconds(10),
+                    errorCodesToAdd: null);
+            }
+        ));
+}
+else
+{
+    throw new Exception($"Unsupported DatabaseProvider: {dbProvider}");
+}
 
 builder.Services.AddIdentity<User, IdentityRole>(options =>
 {

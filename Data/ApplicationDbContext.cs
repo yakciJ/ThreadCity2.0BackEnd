@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using ThreadCity2._0BackEnd.Extensions;
 using ThreadCity2._0BackEnd.Models.Entities;
 
 namespace ThreadCity2._0BackEnd.Data
@@ -141,6 +142,8 @@ namespace ThreadCity2._0BackEnd.Data
 
             modelBuilder.Entity<IdentityRole>().HasData(roles);
 
+            string providerName = Database.ProviderName ?? "";
+            modelBuilder.UseUtcDateTimeWithProviderAdjustment(providerName);
         }
     }
 }

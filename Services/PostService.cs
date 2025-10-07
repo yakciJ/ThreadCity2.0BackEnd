@@ -322,17 +322,25 @@ namespace ThreadCity2._0BackEnd.Services
         public async Task<ICollection<PostDto>?> SearchPostsAsync(string userId, SearchPostsQuery searchPostsQuery)
         {
             int skipNumber = (searchPostsQuery.PageNumber - 1) * searchPostsQuery.PageSize;
-            var searchTerm = "%" + searchPostsQuery.SearchTerm + "%";
+            string searchTerm = searchPostsQuery.SearchTerm?.Trim().ToLower() ?? "";
+
             var postDtos = await _context.Posts
-                .FromSqlRaw("SELECT * FROM Posts WHERE Title COLLATE SQL_Latin1_General_CP1_CI_AI LIKE {0}", searchTerm)
                 .Include(p => p.User)
                 .Include(p => p.LikePosts)
                 .Include(p => p.Comments)
-                .OrderByDescending(post => post.CreatedAt)
-                .Select(post => post.ToPostDto(userId))
+                .Where(p =>
+                    (!string.IsNullOrEmpty(searchTerm)) &&
+                    (
+                        p.Title.ToLower().Contains(searchTerm) ||
+                        p.Content.ToLower().Contains(searchTerm)
+                    )
+                )
+                .OrderByDescending(p => p.CreatedAt)
                 .Skip(skipNumber)
                 .Take(searchPostsQuery.PageSize)
+                .Select(p => p.ToPostDto(userId))
                 .ToListAsync();
+
             return postDtos;
 
             //var searchTerm = "%" + searchPostsQuery.SearchTerm + "%";
